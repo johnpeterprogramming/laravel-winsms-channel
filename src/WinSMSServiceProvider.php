@@ -3,8 +3,6 @@
 namespace Shipper\WinSMS;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Notifications\ChannelManager;
-use Illuminate\Support\Facades\Notification;
 
 class WinSMSServiceProvider extends ServiceProvider
 {
@@ -27,7 +25,7 @@ class WinSMSServiceProvider extends ServiceProvider
 
         // Register the service with parameters
         $this->app->singleton(WinSMSService::class, function ($app) {
-            return new WinSMSService(config('winsms.api_key'), config('winsms.sender_id'));
+            return new WinSMSService(config('winsms.api_key'));
         });
 
         // Optional: Bind a simpler key for facade access or other uses

@@ -22,9 +22,8 @@ class WinSMSChannel
         }
 
         $to = $message->to;
-        $from = $message->from ?? null; // Use default from WinSMSService if not set
         $text = $message->message;
 
-        $this->winSMSService->sendSMS($to, $from, $text);
+        $this->winSMSService->sendSMS($to, $text);
     }
 }

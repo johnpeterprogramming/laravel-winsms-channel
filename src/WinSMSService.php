@@ -2,27 +2,45 @@
 
 namespace Shipper\WinSMS;
 
+use GuzzleHttp\Client;
+
 class WinSMSService
 {
     protected $apiKey;
     protected $defaultSenderId;
+    protected $client;
 
-    public function __construct($apiKey, $defaultSenderId = null)
+    public function __construct($apiKey, Client|null $client = null)
     {
         $this->apiKey = $apiKey;
-        $this->defaultSenderId = $defaultSenderId ?: config('winsms.sender_id');
+        $this->client = $client ?: new Client();
     }
 
-    public function sendSMS($to, $from = null, $message)
+    public function sendSMS($to, $message)
     {
-        $from = $from ?: $this->defaultSenderId; // Use provided sender or default
-        $sms = urlencode($message);
-        $url = "https://www.winsmspro.com/sms/sms/api?action=send-sms&api_key={$this->apiKey}&to={$to}&from={$from}&sms={$sms}";
+        $url = 'https://api.winsms.co.za/api/rest/v1/sms/outgoing/send';
 
-        // Consider using a HTTP client like Guzzle for better error handling and flexibility
-        $response = file_get_contents($url);
+        $payload = [
+            'message' => $message,
+            'recipients' => [
+                [
+                    'mobileNumber' => $to,
+                ]
+            ],
+            'maxSegments' => 6,
+        ];
 
-        // Process the response
-        return $response;
+        $headers = [
+            'AUTHORIZATION' => $this->apiKey,
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ];
+
+        $response = $this->client->post($url, [
+            'headers' => $headers,
+            'json' => $payload,
+        ]);
+
+        return $response->getBody()->getContents();
     }
 }

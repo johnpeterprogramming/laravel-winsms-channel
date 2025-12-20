@@ -5,7 +5,6 @@ namespace Shipper\WinSMS;
 class WinSMSMessage
 {
     public $to;
-    public $from;
     public $message;
 
     public function __construct(string $message = '')
@@ -21,12 +20,6 @@ class WinSMSMessage
     public function to(string $to): self
     {
         $this->to = str_replace('+', '', $to);
-        return $this;
-    }
-
-    public function from(string $from): self
-    {
-        $this->from = $from;
         return $this;
     }
 
