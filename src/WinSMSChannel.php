@@ -15,6 +15,11 @@ class WinSMSChannel
 
     public function send($notifiable, Notification $notification)
     {
+        // Skip if SMS is globally disabled - enabled by default
+        if (!config('winsms.enabled', true)) {
+            return;
+        }
+
         $message = $notification->toWinSMS($notifiable);
 
         if (!$message instanceof WinSMSMessage) {
